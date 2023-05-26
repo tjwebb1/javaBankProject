@@ -9,31 +9,18 @@ public class bank{
     UUID client_id;
     UUID random_id = UUID.randomUUID();
     static Scanner input = new Scanner(System.in);
-    checking_account checking_account = new checking_account(this);
-    savings_account savings_account = new savings_account(this);
-
-
-    @Override public String toString() {
-        System.out.println("Client name: " + client_name + "; Client Username: " + client_username + "; Client Password: " + client_password + "; Client ID: " + client_id + ";");
-        System.out.println("Client checking balance: " + checking_account.balance + "; Checking account previous transactions amount: " + checking_account.prev_transactions_occurred + ";");
-        System.out.println("Client savings balance: " + savings_account.balance + "; Savings account previous transactions amount: " + savings_account.prev_transactions_occurred + ";");
-        return "";
-    }
+    accounts accounts = new accounts(this);
 
     public bank() {
         //
     }
 
-    public checking_account get_checking_account() {
-        return checking_account;
-    }
-
-    public savings_account get_savings_account() {
-        return savings_account;
+    public accounts get_accounts() {
+        return accounts;
     }
 
     public void create_client_account() {
-        System.out.print("Please enter clients name: ");
+        System.out.print("\nPlease enter clients name: ");
         set_client_name(input.nextLine().toLowerCase());
         System.out.print("Please enter desired username: ");
         set_client_username(input.nextLine().toLowerCase());
@@ -42,9 +29,27 @@ public class bank{
         set_client_id();
     }
 
+    public static int client_login() {
+        int index = 0;
+        System.out.print("\nPlease enter username: ");
+        String username = input.nextLine().toLowerCase();
+        System.out.print("Please enter password: ");
+        String password = input.nextLine().toLowerCase();
+        for(bank element : main.list_of_clients) {
+            if(element.get_client_username().equals(username) && element.get_client_password().equals(password)) {
+                System.out.println("\nClient successfully found.");
+                return index;
+            } else {
+                index++;
+            }
+        }
+        System.out.println("\nUsername or password entered incorrectly.");
+        return -1;
+    }
+
     public static int find_client() {
         int index = 0;
-        System.out.print("Please enter clients name: ");
+        System.out.print("\nPlease enter clients name: ");
         String check = input.nextLine().toLowerCase();
         for(bank element : main.list_of_clients) {
             if(element.get_client_name().equals(check)) {
@@ -54,7 +59,7 @@ public class bank{
                 index++;
             }
         }
-        System.out.println("\nClient not in system.\n");
+        System.out.println("\nClient not in system.");
         return -1;
     }
 
