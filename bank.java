@@ -21,20 +21,21 @@ public class bank{
 
     public void create_client_account() {
         System.out.print("\nPlease enter clients name: ");
-        set_client_name(input.nextLine().toLowerCase());
+        set_client_name(input.nextLine());
         System.out.print("Please enter desired username: ");
-        set_client_username(input.nextLine().toLowerCase());
+        set_client_username(input.nextLine());
         System.out.print("Please enter desired password: ");
-        set_client_password(input.nextLine().toLowerCase());
+        set_client_password(input.nextLine());
         set_client_id();
+        System.out.println("\nNew client created.");
     }
 
     public static int client_login() {
         int index = 0;
         System.out.print("\nPlease enter username: ");
-        String username = input.nextLine().toLowerCase();
+        String username = input.nextLine();
         System.out.print("Please enter password: ");
-        String password = input.nextLine().toLowerCase();
+        String password = input.nextLine();
         for(bank element : main.list_of_clients) {
             if(element.get_client_username().equals(username) && element.get_client_password().equals(password)) {
                 System.out.println("\nClient successfully found.");

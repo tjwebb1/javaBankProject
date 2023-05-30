@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,6 +10,7 @@ public class accounts{
     List<String> prev_transactions_notes_savings = new ArrayList<>();
     int prev_transactions_occurred_checking = 0;
     int prev_transactions_occurred_savings = 0;
+    DecimalFormat df = new DecimalFormat("#0.00");
     Scanner input = new Scanner(System.in);
     String invalid = "\nInvalid input, please enter a valid number.";
     bank bank;
@@ -41,17 +43,20 @@ public class accounts{
         System.out.println("\n--------------------------------------------------------------");
         System.out.println("Current user: " + bank.get_client_name());
         if(account_choice == 1) {
-            System.out.println("Current balance: " + get_checking_balance());
+            System.out.println("Current balance: $" + df.format(get_checking_balance()));
             System.out.println("Amount of previous transactions: " + prev_transactions_occurred_checking);
+            System.out.println("Account Type: Checking Account");
         } else if(account_choice == 2) {
-            System.out.println("Current balance " + get_savings_balance());
+            System.out.println("Current balance: $" + df.format(get_savings_balance()));
             System.out.println("Amount of previous transactions: " + prev_transactions_occurred_savings);
+            System.out.println("Account Type: Savings Account");
         }
         System.out.println("--------------------------------------------------------------");
     }
 
-    public int account_options() {
+    public int account_options(int account_choice) {
         try{
+            account_info(account_choice);
             System.out.println("\nPlease choose an option below.");
             System.out.println("1. Deposit into account.");
             System.out.println("2. Withdraw from account.");
@@ -65,45 +70,54 @@ public class accounts{
         }
     }
 
-    public void account_options_switch(int choice, int account_choice) {
-        double amount;
-        switch(choice) {
-            case 1: System.out.print("\nPlease enter amount you wish to deposit: ");
-                    amount = Double.parseDouble(input.nextLine());
-                    amount = check_amount(amount);
-                    if(amount == 0) {
-                        break;
-                    }
-                    deposit_into_account(amount, account_choice);
-                    break;
-            case 2: System.out.print("\nPlease enter amount you wish to withdraw: ");
-                    amount = Double.parseDouble(input.nextLine());
-                    amount = check_amount(amount);
-                    if(amount == 0) {
-                        break;
-                    }
-                    withdraw_from_account(amount, account_choice);
-                    break;
-            case 3: System.out.print("\nPlease enter amount you wish to transfer: ");
-                    amount = Double.parseDouble(input.nextLine());
-                    amount = check_amount(amount);
-                    if(amount == 0) {
-                        break;
-                    }
-                    transfer_checking_to_savings(amount, account_choice);
-                    break;
-            case 4: System.out.print("\nPlease enter amount of transactions to see: ");
-                    amount = Integer.parseInt(input.nextLine());
-                    amount = check_amount(amount);
-                    if(amount == 0) {
-                        break;
-                    }
-                    display_prev_transactions(amount, account_choice);
-                    break;
-            case 5: break;
-            default: System.out.println(invalid);
-                    break;
-        }
+    public void account_options_switch(int account_choice) {
+        Boolean done = false;
+        do{
+            int choice = account_options(account_choice);
+            double amount;
+            try{
+                switch(choice) {
+                    case 1: System.out.print("\nPlease enter amount you wish to deposit: ");
+                            amount = Double.parseDouble(input.nextLine());
+                            amount = check_amount(amount);
+                            if(amount == 0) {
+                                break;
+                            }
+                            deposit_into_account(amount, account_choice, 0); // added 3rd parameter transfer_check to deposit and withdraw, to avoid multiple
+                            break;                                                          // transactions being counted when transferring between accounts.
+                    case 2: System.out.print("\nPlease enter amount you wish to withdraw: ");
+                            amount = Double.parseDouble(input.nextLine());
+                            amount = check_amount(amount);
+                            if(amount == 0) {
+                                break;
+                            }
+                            withdraw_from_account(amount, account_choice, 0);
+                            break;
+                    case 3: System.out.print("\nPlease enter amount you wish to transfer: ");
+                            amount = Double.parseDouble(input.nextLine());
+                            amount = check_amount(amount);
+                            if(amount == 0) {
+                                break;
+                            }
+                            transfer_to_other_account(amount, account_choice);
+                            break;
+                    case 4: System.out.print("\nPlease enter amount of transactions to see: ");
+                            amount = Integer.parseInt(input.nextLine());
+                            amount = check_amount(amount);
+                            if(amount == 0) {
+                                break;
+                            }
+                            display_prev_transactions(amount, account_choice);
+                            break;
+                    case 5: done = true;
+                            break;
+                    default: System.out.println(invalid);
+                            break;
+                }
+            } catch(Exception e) {
+                System.out.println(invalid);
+            }
+        }while(!(done));
     }
 
     public double check_amount(double amount) {
@@ -120,38 +134,45 @@ public class accounts{
         }
     }
 
-    public void deposit_into_account(double amount, int account_choice) {
+    public void deposit_into_account(double amount, int account_choice, int transfer_check) {
         if(account_choice == 1) {
             checking_balance += amount;
-            prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You deposited " + amount + " dollars into this account.");
+            if(transfer_check!=1){
+                prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You deposited $" + df.format(amount) + " dollars into this account.");
+            }
         } else if(account_choice == 2) {
             savings_balance += amount;
-            prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You deposited " + amount + " dollars into this account.");
+            if(transfer_check!=1){
+                prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You deposited $" + df.format(amount) + " dollars into this account.");
+            }
         }
-        System.out.println("\n" + amount + " successfully deposited.");
     }
 
-    public void withdraw_from_account(double amount, int account_choice) {
+    public void withdraw_from_account(double amount, int account_choice, int transfer_check) {
         if(account_choice == 1) {
             if(checking_balance - amount < 0) {
                 System.out.println("\nUnable to withdraw, not enough money in account.");
             } else {
                 checking_balance -= amount;
-                System.out.println("\n" + amount + " successfully withdrawn.");
-                prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You withdrew " + amount + " dollars from this account.");
+                if(transfer_check!=1){
+                    System.out.println("\n$" + df.format(amount) + " successfully withdrawn.");
+                    prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You withdrew $" + df.format(amount) + " dollars from this account.");
+                }
             }
         } else if(account_choice == 2) {
             if(savings_balance - amount < 0) {
                 System.out.println("\nUnable to withdraw, not enough money in account.");
             } else {
                 savings_balance -= amount;
-                System.out.println("\n" + amount + " successfully withdrawn.");
-                prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You withdrew " + amount + " dollars from this account.");
+                if(transfer_check!=1){
+                    System.out.println("\n$" + df.format(amount) + " successfully withdrawn.");
+                    prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You withdrew $" + df.format(amount) + " dollars from this account.");
+                }
             }
         }
     }
 
-    public void transfer_checking_to_savings(double amount, int account_choice) {
+    public void transfer_to_other_account(double amount, int account_choice) {
         int opposite_account = 0;
         if(account_choice == 1) {
             opposite_account = 2;
@@ -159,8 +180,8 @@ public class accounts{
                 System.out.println("\nUnable to transfer, not enough money in account.");
                 return;
             } else {
-                prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You transferred " + amount + " dollars to your Savings Account.");
-                prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You received " + amount + " dollars from your Checking Account.");
+                prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You transferred $" + df.format(amount) + " dollars to your Savings Account.");
+                prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You received $" + df.format(amount) + " dollars from your Checking Account.");
             }
         }else if(account_choice == 2) {
             opposite_account = 1;
@@ -168,13 +189,13 @@ public class accounts{
                 System.out.println("\nUnable to transfer, not enough money in account.");
                 return;     
             } else {
-                prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You transferred " + amount + " dollars to your Checking Account.");
-                prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You received " + amount + " dollars from your Savings Account.");
+                prev_transactions_notes_savings.add("\nTransaction " + ++prev_transactions_occurred_checking + ": You transferred $" + df.format(amount) + " dollars to your Checking Account.");
+                prev_transactions_notes_checking.add("\nTransaction " + ++prev_transactions_occurred_savings + ": You received $" + df.format(amount) + " dollars from your Savings Account.");
             }
         }
-        withdraw_from_account(amount, account_choice);
-        deposit_into_account(amount, opposite_account);
-        System.out.println("\n" + amount + " successfully transferred.");
+        withdraw_from_account(amount, account_choice, 1);
+        deposit_into_account(amount, opposite_account, 1);
+        System.out.println("\n$" + df.format(amount) + " successfully transferred.");
         }
 
     public void display_prev_transactions(double amount, int account_choice) {

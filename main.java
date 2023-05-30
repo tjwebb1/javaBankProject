@@ -51,18 +51,18 @@ public class main{
                 case 1:
                 case 2: bank bank = list_of_clients.get(main.get_client_index());
                         accounts accounts = bank.get_accounts();
-                        accounts.account_info(account_choice);
-                        accounts.account_options_switch(bank.accounts.account_options(), account_choice);
+                        accounts.account_options_switch(account_choice);
                         return false;
                 case 3: return true;
+                default: System.out.println("\nInvalid input, please enter a valid number.");
+                        return false;
             }
         } while(true);
     }
     public static void main(String[] args) {
         Boolean banking_done = false;
-        Boolean account_done = false;
-        do{
-            
+        Boolean account_done = false; // Used to stay in logged in account until user prompts to log out.
+        do{           
             int choice = initial_choice();
             switch(choice) { 
                 case 1: bank new_client = new bank();
