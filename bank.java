@@ -2,42 +2,42 @@
 import java.util.UUID;
 import java.util.Scanner;
 
-public class bank{
-    String client_name;
-    String client_username;
-    String client_password;
-    UUID client_id;
-    UUID random_id = UUID.randomUUID();
-    static Scanner input = new Scanner(System.in);
-    accounts accounts = new accounts(this);
+public class Bank{
+    private String clientName;
+    private String clientUsername;
+    private String clientPassword;
+    private UUID clientID;
+    private UUID randomID = UUID.randomUUID();
+    private static Scanner input = new Scanner(System.in);
+    private Accounts accounts = new Accounts(this);
 
-    public bank() {
+    public Bank() {
         //
     }
 
-    public accounts get_accounts() {
+    public Accounts getAccounts() {
         return accounts;
     }
 
-    public void create_client_account() {
+    public void createClientAccount() {
         System.out.print("\nPlease enter clients name: ");
-        set_client_name(input.nextLine());
+        setClientName(input.nextLine());
         System.out.print("Please enter desired username: ");
-        set_client_username(input.nextLine());
+        setClientUsername(input.nextLine());
         System.out.print("Please enter desired password: ");
-        set_client_password(input.nextLine());
-        set_client_id();
+        setClientPassword(input.nextLine());
+        setClientID();
         System.out.println("\nNew client created.");
     }
 
-    public static int client_login() {
+    public static int clientLogin() {
         int index = 0;
         System.out.print("\nPlease enter username: ");
         String username = input.nextLine();
         System.out.print("Please enter password: ");
         String password = input.nextLine();
-        for(bank element : main.list_of_clients) {
-            if(element.get_client_username().equals(username) && element.get_client_password().equals(password)) {
+        for(Bank element : Main.listOfClients) {
+            if(element.getClientUsername().equals(username) && element.getClientPassword().equals(password)) {
                 System.out.println("\nClient successfully found.");
                 return index;
             } else {
@@ -48,12 +48,12 @@ public class bank{
         return -1;
     }
 
-    public static int find_client() {
+    public static int findClient() {
         int index = 0;
         System.out.print("\nPlease enter clients name: ");
         String check = input.nextLine().toLowerCase();
-        for(bank element : main.list_of_clients) {
-            if(element.get_client_name().equals(check)) {
+        for(Bank element : Main.listOfClients) {
+            if(element.getClientName().equals(check)) {
                 System.out.println("\nClient successfully found.");
                 return index;
             } else {
@@ -64,35 +64,35 @@ public class bank{
         return -1;
     }
 
-    public void set_client_name(String client_name) {
-        this.client_name = client_name;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
-    public void set_client_password(String client_password) {
-        this.client_password = client_password;
+    public void setClientPassword(String clientPassword) {
+        this.clientPassword = clientPassword;
     }
 
-    public void set_client_username(String client_username) {
-        this.client_username = client_username;
+    public void setClientUsername(String clientUsername) {
+        this.clientUsername = clientUsername;
     }
 
-    public void set_client_id() {
-        this.client_id = random_id;
+    public void setClientID() {
+        this.clientID = randomID;
     }
 
-    public String get_client_name() {
-        return client_name;
+    public String getClientName() {
+        return clientName;
     }
 
-    public String get_client_username() {
-        return client_username;
+    public String getClientUsername() {
+        return clientUsername;
     }
 
-    public String get_client_password() {
-        return client_password;
+    public String getClientPassword() {
+        return clientPassword;
     }
 
-    public UUID get_client_id() {
-        return client_id;
+    public UUID getClientID() {
+        return clientID;
     }
 }   

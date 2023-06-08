@@ -2,24 +2,24 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class main{
-    public static List<bank> list_of_clients = new ArrayList<>();
+public class Main{
+    protected static List<Bank> listOfClients = new ArrayList<>();
     static Scanner input = new Scanner(System.in);
-    int client_index;
-    static main main = new main();
+    private int clientIndex;
+    private static Main main = new Main();
 
-    public static void store_client(bank new_client) {
-        list_of_clients.add(new_client);
+    public static void storeClient(Bank newClient) {
+        listOfClients.add(newClient);
     }
     
-    public int get_client_index() {
-        return client_index;
+    public int getClientIndex() {
+        return clientIndex;
     }
 
-    public void set_client_index(int client_index) {
-        this.client_index = client_index;
+    public void setClientIndex(int clientIndex) {
+        this.clientIndex = clientIndex;
     }
-    public static int initial_choice() {
+    public static int initialChoice() {
         try{
             System.out.println("\nPlease select an option from below.");
             System.out.println("1. Create new account.");
@@ -32,12 +32,12 @@ public class main{
         }
     }
 
-    public static int choose_account() {
+    public static int chooseAccount() {
         try {
             System.out.println("\nWhich account would you like to access?");
             System.out.println("1. Checking account."); 
             System.out.println("2. Savings account.");
-            System.out.println("3. Exit.");
+            System.out.println("3. Logout of account.");
             System.out.print("Enter choice: ");
             return Integer.parseInt(input.nextLine()); // This will be account_choice in every method, checking always 1, savings always 2.
         }catch (Exception e) {
@@ -45,13 +45,13 @@ public class main{
         }       
     }
 
-    public static boolean account_switch_case(int account_choice) {
+    public static boolean accountSwitchCase(int accountChoice) {
         do{
-            switch(account_choice) {
+            switch(accountChoice) {
                 case 1:
-                case 2: bank bank = list_of_clients.get(main.get_client_index());
-                        accounts accounts = bank.get_accounts();
-                        accounts.account_options_switch(account_choice);
+                case 2: Bank bank = listOfClients.get(main.getClientIndex());
+                        Accounts accounts = bank.getAccounts();
+                        accounts.accountOptionsSwitch(accountChoice);
                         return false;
                 case 3: return true;
                 default: System.out.println("\nInvalid input, please enter a valid number.");
@@ -60,29 +60,29 @@ public class main{
         } while(true);
     }
     public static void main(String[] args) {
-        Boolean banking_done = false;
-        Boolean account_done = false; // Used to stay in logged in account until user prompts to log out.
+        Boolean bankingDone = false;
+        Boolean accountDone = false; // Used to stay in logged in account until user prompts to log out.
         do{           
-            int choice = initial_choice();
+            int choice = initialChoice();
             switch(choice) { 
-                case 1: bank new_client = new bank();
-                        store_client(new_client);
-                        new_client.create_client_account();
+                case 1: Bank newClient = new Bank();
+                        storeClient(newClient);
+                        newClient.createClientAccount();
                         break;
-                case 2: main.set_client_index(bank.client_login());
-                        if(main.get_client_index() == -1) {
+                case 2: main.setClientIndex(Bank.clientLogin());
+                        if(main.getClientIndex() == -1) {
                            break;
                         }
                         do{
-                            account_done = account_switch_case(choose_account());
-                        }while(!(account_done));
+                            accountDone = accountSwitchCase(chooseAccount());
+                        }while(Boolean.FALSE.equals((accountDone)));
                         break;
-                case 3: banking_done = true;
+                case 3: bankingDone = true;
                         break;
                 default: System.out.println("\nInvalid input, please enter a valid number.");
                         break;
             }
-        } while(!(banking_done));
+        } while(Boolean.FALSE.equals((bankingDone)));
         System.out.println("\nThank you for using the program!");
     }
 }
