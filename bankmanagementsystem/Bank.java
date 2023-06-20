@@ -1,5 +1,3 @@
-package javabankproject;
-
 import java.util.UUID;
 import java.util.Scanner;
 
