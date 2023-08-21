@@ -95,7 +95,7 @@ public class SavingsAccount{
                             if(amount == 0) {
                                 break;
                             }
-                            transferToCheckingAccount(amount, 1);
+                            transferToCheckingAccount(amount);
                             break;
                     case 4: System.out.print("\nPlease enter amount of transactions to see: ");
                             amount = Integer.parseInt(input.nextLine());
@@ -149,7 +149,7 @@ public class SavingsAccount{
         }
     }
 
-    public void transferToCheckingAccount(double amount, int accountChoice) {
+    public void transferToCheckingAccount(double amount) {
         if(savingsBalance - amount < 0) {
             System.out.println("\nUnable to transfer, not enough money in account.");
             return;
