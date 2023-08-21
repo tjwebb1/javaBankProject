@@ -8,14 +8,15 @@ public class Bank{
     private UUID clientID;
     private UUID randomID = UUID.randomUUID();
     private static Scanner input = new Scanner(System.in);
-    private Accounts accounts = new Accounts(this);
+    SavingsAccount savingsAccount = new SavingsAccount(this);
+    CheckingAccount checkingAccount = new CheckingAccount(this);
 
-    public Bank() {
-        //
+    public SavingsAccount getSavingsAccount() {
+        return savingsAccount;
     }
 
-    public Accounts getAccounts() {
-        return accounts;
+    public CheckingAccount getCheckingAccount() {
+        return checkingAccount;
     }
 
     public void createClientAccount() {

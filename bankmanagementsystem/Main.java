@@ -39,7 +39,7 @@ public class Main{
             System.out.println("2. Savings account.");
             System.out.println("3. Logout of account.");
             System.out.print("Enter choice: ");
-            return Integer.parseInt(input.nextLine()); // This will be account_choice in every method, checking always 1, savings always 2.
+            return Integer.parseInt(input.nextLine()); // This will be accountChoice in every method, checking always 1, savings always 2.
         }catch (Exception e) {
             return -1;
         }       
@@ -47,11 +47,13 @@ public class Main{
 
     public static boolean accountSwitchCase(int accountChoice) {
         do{
+            Bank bank = listOfClients.get(main.getClientIndex());
             switch(accountChoice) {
-                case 1:
-                case 2: Bank bank = listOfClients.get(main.getClientIndex());
-                        Accounts accounts = bank.getAccounts();
-                        accounts.accountOptionsSwitch(accountChoice);
+                case 1: CheckingAccount checkingAccount = bank.getCheckingAccount();
+                        checkingAccount.checkingAccountOptionsSwitch();
+                        return false;
+                case 2: SavingsAccount savingsAccount = bank.getSavingsAccount();
+                        savingsAccount.savingsAccountOptionsSwitch();
                         return false;
                 case 3: return true;
                 default: System.out.println("\nInvalid input, please enter a valid number.");
